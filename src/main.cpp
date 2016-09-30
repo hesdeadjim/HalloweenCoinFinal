@@ -966,16 +966,26 @@ uint256 WantedByOrphan(const CBlock* pblockOrphan)
 
 // miner's coin base reward
 int64_t GetProofOfWorkReward(int64_t nFees)
-{	
-    if(pindexBest->nHeight < 1)
+{
+/*     int64_t nSubsidy = 1000000 * COIN;
+	if (pindexBest->nHeight+1 == 1) { nSubsidy = 300000000 * COIN; return nSubsidy; }
+	else if (pindexBest->nHeight+1 > 1) {nSubsidy >>= ((pindexBest->nHeight + 5000)/5000) * COIN; return nSubsidy;}
+		
+    if (fDebug && GetBoolArg("-printcreation"))
+        printf("GetProofOfWorkReward() : create=%s nSubsidy=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nSubsidy);
+	
+    return nSubsidy + nFees;
+ */	
+	
+	if(pindexBest->nHeight < 1)
     { 
-		int64_t nSubsidy = 15000000 * COIN; // Halloween 10% premine
+		int64_t nSubsidy = 150000000 * COIN; // Halloween 10% premine
 		if (fDebug && GetBoolArg("-printcreation"))
 		printf("GetProofOfWorkReward() : create=%s nSubsidy=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nSubsidy);
 		return nSubsidy;
     } else if(pindexBest->nHeight >= 1)
-    {
-        int64_t nSubsidy = 130 * COIN;
+	{
+        int64_t nSubsidy = 260 * COIN;
         if (fDebug && GetBoolArg("-printcreation"))
         printf("GetProofOfWorkReward() : create=%s nSubsidy=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nSubsidy);
         return nSubsidy + nFees;
@@ -2494,7 +2504,7 @@ bool LoadBlockIndex(bool fAllowNew)
 
         const char* pszTimestamp = "An apple can change the world";
         CTransaction txNew;
-        txNew.nTime = 1474674536;
+        txNew.nTime = 1475076242;
         txNew.vin.resize(1);
         txNew.vout.resize(1);
         txNew.vin[0].scriptSig = CScript() << 0 << CBigNum(42) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
@@ -2504,15 +2514,15 @@ bool LoadBlockIndex(bool fAllowNew)
         block.hashPrevBlock = 0;
         block.hashMerkleRoot = block.BuildMerkleTree();
         block.nVersion = 1;
-        block.nTime = 1474674536;
+        block.nTime = 1475076242;
         block.nBits    = bnProofOfWorkLimit.GetCompact();
-        block.nNonce = 908834 ;
+        block.nNonce = 857277 ;
 		if(fTestNet)
         {
-            block.nNonce = 908834 ;
+            block.nNonce = 857277 ;
         }
 		
-		uint256 nhashMerkleRoot = uint256("c7921c8134d322a87429376b752bc768763cb7233bf9f025c41a61221939c570");
+		uint256 nhashMerkleRoot = uint256("fb8e7cbe4594ad92936a4a0f2e044b79c002e51e68baa26cf6c7a29e05c09029");
 
 		if (false  && (block.GetHash() != hashGenesisBlock)) {
 
@@ -2529,7 +2539,6 @@ bool LoadBlockIndex(bool fAllowNew)
                    }
                }
         }
-		
 		
         block.print();
         printf("block.GetHash() == %s\n", block.GetHash().ToString().c_str());

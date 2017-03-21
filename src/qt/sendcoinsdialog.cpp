@@ -37,7 +37,7 @@ SendCoinsDialog::SendCoinsDialog(QWidget *parent) :
 
 #if QT_VERSION >= 0x040700
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */
-    ui->lineEditCoinControlChange->setPlaceholderText(tr("Enter a Halloween address (e.g. Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)"));
+    ui->lineEditCoinControlChange->setPlaceholderText(tr("Enter a Halloween address (e.g. HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)"));
 #endif
 
     addEntry();

@@ -1766,8 +1766,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location filename="../sendcoinsdialog.cpp" line="-173"/>
-        <source>Enter a LVGcoin address (e.g. Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</source>
-        <translation>Introduceți o adresă LVGcoin(ex:Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</translation>
+        <source>Enter a LVGcoin address (e.g. HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</source>
+        <translation>Introduceți o adresă LVGcoin(ex:HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -1910,8 +1910,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="+18"/>
-        <source>The address to send the payment to  (e.g. Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</source>
-        <translation>Adresa catre care trimiteti plata(ex. Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</translation>
+        <source>The address to send the payment to  (e.g. HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</source>
+        <translation>Adresa catre care trimiteti plata(ex. HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1940,8 +1940,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location filename="../sendcoinsentry.cpp" line="+1"/>
-        <source>Enter a LVGcoin address (e.g. Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</source>
-        <translation>Introduceți o adresă LVGcoin(ex:Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</translation>
+        <source>Enter a LVGcoin address (e.g. HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</source>
+        <translation>Introduceți o adresă LVGcoin(ex:HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</translation>
     </message>
 </context>
 <context>
@@ -1964,8 +1964,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="+18"/>
-        <source>The address to sign the message with (e.g. Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</source>
-        <translation>Adresa cu care semnati mesajul(ex. Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</translation>
+        <source>The address to sign the message with (e.g. HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</source>
+        <translation>Adresa cu care semnati mesajul(ex. HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2028,8 +2028,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     </message>
     <message>
         <location line="+21"/>
-        <source>The address the message was signed with (e.g. Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</source>
-        <translation>Adresa cu care a fost semnat mesajul(ex. Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</translation>
+        <source>The address the message was signed with (e.g. HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</source>
+        <translation>Adresa cu care a fost semnat mesajul(ex. HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -2044,8 +2044,8 @@ Acest lucru înseamnă că o taxă de cel puțin %2 este necesară</translation>
     <message>
         <location filename="../signverifymessagedialog.cpp" line="+27"/>
         <location line="+3"/>
-        <source>Enter a LVGcoin address (e.g. Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</source>
-        <translation>Introduceți o adresă LVGcoin(ex:Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</translation>
+        <source>Enter a LVGcoin address (e.g. HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</source>
+        <translation>Introduceți o adresă LVGcoin(ex:HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</translation>
     </message>
     <message>
         <location line="-2"/>

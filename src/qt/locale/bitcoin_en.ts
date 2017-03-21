@@ -1782,8 +1782,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location filename="../sendcoinsdialog.cpp" line="-173"/>
-        <source>Enter a LVGcoin address (e.g. Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</source>
-        <translation>Enter a LVGcoin address (e.g. Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</translation>
+        <source>Enter a LVGcoin address (e.g. HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</source>
+        <translation>Enter a LVGcoin address (e.g. HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -1926,7 +1926,7 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+18"/>
-        <source>The address to send the payment to  (e.g. Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</source>
+        <source>The address to send the payment to  (e.g. HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</source>
         <translation></translation>
     </message>
     <message>
@@ -1956,8 +1956,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location filename="../sendcoinsentry.cpp" line="+1"/>
-        <source>Enter a LVGcoin address (e.g. Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</source>
-        <translation>Enter a LVGcoin address (e.g. Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</translation>
+        <source>Enter a LVGcoin address (e.g. HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</source>
+        <translation>Enter a LVGcoin address (e.g. HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</translation>
     </message>
 </context>
 <context>
@@ -1980,8 +1980,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+18"/>
-        <source>The address to sign the message with (e.g. Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</source>
-        <translation>The address to sign the message with (e.g. Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</translation>
+        <source>The address to sign the message with (e.g. HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</source>
+        <translation>The address to sign the message with (e.g. HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2044,8 +2044,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     </message>
     <message>
         <location line="+21"/>
-        <source>The address the message was signed with (e.g. Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</source>
-        <translation>The address the message was signed with (e.g. Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</translation>
+        <source>The address the message was signed with (e.g. HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</source>
+        <translation>The address the message was signed with (e.g. HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -2060,8 +2060,8 @@ This label turns red, if the priority is smaller than &quot;medium&quot;.
     <message>
         <location filename="../signverifymessagedialog.cpp" line="+27"/>
         <location line="+3"/>
-        <source>Enter a LVGcoin address (e.g. Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</source>
-        <translation>Enter a LVGcoin address (e.g. Ld9EDYP4c2M3rXuETZ9sSXbMsx8yAQzTm9)</translation>
+        <source>Enter a LVGcoin address (e.g. HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</source>
+        <translation>Enter a LVGcoin address (e.g. HKFEjmZP7qzdYJ5x9UnLH4Kda3duURPcok)</translation>
     </message>
     <message>
         <location line="-2"/>

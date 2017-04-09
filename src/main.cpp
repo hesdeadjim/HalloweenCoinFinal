@@ -39,12 +39,12 @@ libzerocoin::Params* ZCParams;
 CBigNum bnProofOfWorkLimit(~uint256(0) >> 20); // PoW starting difficulty = 0.0002441
 CBigNum bnProofOfStakeLimit(~uint256(0) >> 20); // PoS starting difficulty = 0.0002441
 CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 16);
-CBigNum bnProofOfWorkFirstBlock(~uint256(0) >> 30);
 
-unsigned int nTargetSpacing = 1 * 30;
-unsigned int nStakeMinAge = 2 * 60 * 60;
-unsigned int nStakeMaxAge =  -1;           // unlimited
-unsigned int nModifierInterval = 10 * 60; // time to elapse before new modifier is computed
+unsigned int nTargetSpacing = 1 * 30;              // 15 seconds
+unsigned int nTargetSpacingRedux = BLOCK_SPACING;  // 6 minutes
+unsigned int nStakeMinAge = 2 * 60 * 60;           // 2 hours
+unsigned int nStakeMaxAge =  -1;                   // unlimited
+unsigned int nModifierInterval = 10 * 60;          // time to elapse before new modifier is computed
 
 int nCoinbaseMaturity = 10;
 CBlockIndex* pindexGenesisBlock = NULL;
@@ -967,16 +967,6 @@ uint256 WantedByOrphan(const CBlock* pblockOrphan)
 // miner's coin base reward
 int64_t GetProofOfWorkReward(int64_t nFees)
 {
-/*     int64_t nSubsidy = 1000000 * COIN;
-	if (pindexBest->nHeight+1 == 1) { nSubsidy = 300000000 * COIN; return nSubsidy; }
-	else if (pindexBest->nHeight+1 > 1) {nSubsidy >>= ((pindexBest->nHeight + 5000)/5000) * COIN; return nSubsidy;}
-		
-    if (fDebug && GetBoolArg("-printcreation"))
-        printf("GetProofOfWorkReward() : create=%s nSubsidy=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nSubsidy);
-	
-    return nSubsidy + nFees;
- */	
-	
 	if(pindexBest->nHeight < 1)
     { 
 		int64_t nSubsidy = 150000000 * COIN; // Halloween 10% premine
@@ -992,7 +982,6 @@ int64_t GetProofOfWorkReward(int64_t nFees)
     }	
 }
 
-const int DAILY_BLOCKCOUNT =  2880;
 // miner's coin stake reward based on coin age spent (coin-days)
 int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees)
 {
@@ -1047,7 +1036,6 @@ unsigned int ComputeMinStake(unsigned int nBase, int64_t nTime, unsigned int nBl
     return ComputeMaxBits(bnProofOfStakeLimit, nBase, nTime);
 }
 
-
 // ppcoin: find last block index up to pindex
 const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfStake)
 {
@@ -1056,7 +1044,7 @@ const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfSta
     return pindex;
 }
 
-static unsigned int GetNextTargetRequired_(const CBlockIndex* pindexLast, bool fProofOfStake)
+unsigned int PeercoinDiff(const CBlockIndex* pindexLast, bool fProofOfStake)
 {
     CBigNum bnTargetLimit = fProofOfStake ? bnProofOfStakeLimit : bnProofOfWorkLimit;
 
@@ -1088,9 +1076,252 @@ static unsigned int GetNextTargetRequired_(const CBlockIndex* pindexLast, bool f
     return bnNew.GetCompact();
 }
 
+unsigned int Terminal_Velocity_RateX(const CBlockIndex* pindexLast, bool fProofOfStake)
+{
+    // Terminal-Velocity-RateX, v10-Alpha-R1, written by Jonathan Dan Zaretsky - cryptocoderz@gmail.com
+    const CBigNum bnTerminalVelocity = fProofOfStake ? bnProofOfStakeLimit : bnProofOfWorkLimit;
+
+    // Check for block 0
+    if (pindexLast == NULL)
+        return bnTerminalVelocity.GetCompact(); // genesis block
+    // Differentiate PoW/PoS prev block
+    const CBlockIndex* BlockVelocityType = GetLastBlockIndex(pindexLast, fProofOfStake);
+    // Set prev blocks to check spacing
+    const CBlockIndex* BlockVelocityPrev1 = pindexLast;
+    if (BlockVelocityPrev1->pprev == NULL)
+        return bnTerminalVelocity.GetCompact(); // first block
+    const CBlockIndex* BlockVelocityPrevPrev1 = BlockVelocityPrev1->pprev;
+    if (BlockVelocityPrevPrev1->pprev == NULL)
+        return bnTerminalVelocity.GetCompact(); // second block
+    const CBlockIndex* BlockVelocityPrev2 = BlockVelocityPrevPrev1->pprev;
+    if (BlockVelocityPrev2->pprev == NULL)
+        return bnTerminalVelocity.GetCompact(); // third block
+    const CBlockIndex* BlockVelocityPrevPrev2 = BlockVelocityPrev2->pprev;
+    if (BlockVelocityPrevPrev2->pprev == NULL)
+        return bnTerminalVelocity.GetCompact(); // fourth block
+    const CBlockIndex* BlockVelocityPrev3 = BlockVelocityPrevPrev2->pprev;
+    if (BlockVelocityPrev3->pprev == NULL)
+        return bnTerminalVelocity.GetCompact(); // fifth block
+    const CBlockIndex* BlockVelocityPrevPrev3 = BlockVelocityPrev3->pprev;
+    if (BlockVelocityPrevPrev3->pprev == NULL)
+        return bnTerminalVelocity.GetCompact(); // sixth block
+
+    // Define values
+    double VLF1 = 0;
+    double VLF2 = 0;
+    double VLF3 = 0;
+    double VLF4 = 0;
+    double VLF5 = 0;
+    double VRFsm1 = 1;
+    double VRFdw1 = 0.75;
+    double VRFdw2 = 0.5;
+    double VRFup1 = 1.25;
+    double VRFup2 = 1.5;
+    double VRFup3 = 2;
+    double TerminalAverage = 0;
+    double TerminalFactor = 10000;
+    int64_t VLrate1 = 0;
+    int64_t VLrate2 = 0;
+    int64_t VLrate3 = 0;
+    int64_t VLrate4 = 0;
+    int64_t VLrate5 = 0;
+    int64_t DSrateNRM = BLOCK_SPACING;
+    int64_t DSrateMAX = BLOCK_SPACING_MAX;
+    int64_t FRrateDWN = DSrateNRM - 60;
+    int64_t FRrateFLR = DSrateNRM - 80;
+    int64_t FRrateCLNG = DSrateMAX * 3;
+    int64_t difficultyfactor = 0;
+    int64_t AverageDivisor = 5;
+    // Set standard values
+    VLrate1 = BlockVelocityPrev1->GetBlockTime() - BlockVelocityPrevPrev1->GetBlockTime();
+    VLrate2 = BlockVelocityPrevPrev1->GetBlockTime() - BlockVelocityPrev2->GetBlockTime();
+    VLrate3 = BlockVelocityPrev2->GetBlockTime() - BlockVelocityPrevPrev2->GetBlockTime();
+    VLrate4 = BlockVelocityPrevPrev2->GetBlockTime() - BlockVelocityPrev3->GetBlockTime();
+    VLrate5 = BlockVelocityPrev3->GetBlockTime() - BlockVelocityPrevPrev3->GetBlockTime();
+    // LogPrintf("Terminal-Velocity 1st spacing: %u: \n",VLrate1);
+    // LogPrintf("Terminal-Velocity 2nd spacing: %u: \n",VLrate2);
+    // LogPrintf("Terminal-Velocity 3rd spacing: %u: \n",VLrate3);
+    // LogPrintf("Terminal-Velocity 4th spacing: %u: \n",VLrate4);
+    // LogPrintf("Terminal-Velocity 5th spacing: %u: \n",VLrate5);
+    // LogPrintf("Desired normal spacing: %u: \n",DSrateNRM);
+    // LogPrintf("Desired maximum spacing: %u: \n",DSrateMAX);
+    // Check value round 1
+    if(VLrate1 >= DSrateNRM)
+    {
+        VLF1 = VRFsm1;
+        if(VLrate1 > DSrateMAX)
+        {
+            VLF1 = VRFdw1;
+            if(VLrate1 > FRrateCLNG)
+            {
+                VLF1 = VRFdw2;
+            }
+        }
+    }
+    else if(VLrate1 < DSrateNRM)
+    {
+        VLF1 = VRFup1;
+        if(VLrate1 < FRrateDWN)
+        {
+            VLF1 = VRFup2;
+            if(VLrate1 < FRrateFLR)
+            {
+                VLF1 = VRFup3;
+            }
+        }
+    }
+    // Check value round 2
+    if(VLrate2 >= DSrateNRM)
+    {
+        VLF2 = VRFsm1;
+        if(VLrate2 > DSrateMAX)
+        {
+            VLF2 = VRFdw1;
+            if(VLrate2 > FRrateCLNG)
+            {
+                VLF2 = VRFdw2;
+            }
+        }
+    }
+    else if(VLrate2 < DSrateNRM)
+    {
+        VLF2 = VRFup1;
+        if(VLrate2 < FRrateDWN)
+        {
+            VLF2 = VRFup2;
+            if(VLrate2 < FRrateFLR)
+            {
+                VLF2 = VRFup3;
+            }
+        }
+    }
+    // Check value round 3
+    if(VLrate3 >= DSrateNRM)
+    {
+        VLF3 = VRFsm1;
+        if(VLrate3 > DSrateMAX)
+        {
+            VLF3 = VRFdw1;
+            if(VLrate3 > FRrateCLNG)
+            {
+                VLF3 = VRFdw2;
+            }
+        }
+    }
+    else if(VLrate3 < DSrateNRM)
+    {
+        VLF3 = VRFup1;
+        if(VLrate3 < FRrateDWN)
+        {
+            VLF3 = VRFup2;
+            if(VLrate3 < FRrateFLR)
+            {
+                VLF3 = VRFup3;
+            }
+        }
+    }
+    // Check value round 4
+    if(VLrate4 >= DSrateNRM)
+    {
+        VLF4 = VRFsm1;
+        if(VLrate4 > DSrateMAX)
+        {
+            VLF4 = VRFdw1;
+            if(VLrate4 > FRrateCLNG)
+            {
+                VLF4 = VRFdw2;
+            }
+        }
+    }
+    else if(VLrate4 < DSrateNRM)
+    {
+        VLF4 = VRFup1;
+        if(VLrate4 < FRrateDWN)
+        {
+            VLF4 = VRFup2;
+            if(VLrate4 < FRrateFLR)
+            {
+                VLF4 = VRFup3;
+            }
+        }
+    }
+    // Check value round 5
+    if(VLrate5 >= DSrateNRM)
+    {
+        VLF5 = VRFsm1;
+        if(VLrate5 > DSrateMAX)
+        {
+            VLF5 = VRFdw1;
+            if(VLrate5 > FRrateCLNG)
+            {
+                VLF5 = VRFdw2;
+            }
+        }
+    }
+    else if(VLrate5 < DSrateNRM)
+    {
+        VLF5 = VRFup1;
+        if(VLrate5 < FRrateDWN)
+        {
+            VLF5 = VRFup2;
+            if(VLrate5 < FRrateFLR)
+            {
+                VLF5 = VRFup3;
+            }
+        }
+    }
+    // Final mathematics
+    // LogPrintf("Terminal-Velocity 1st multiplier set to: %f: \n",VLF1);
+    // LogPrintf("Terminal-Velocity 2nd multiplier set to: %f: \n",VLF2);
+    // LogPrintf("Terminal-Velocity 3rd multiplier set to: %f: \n",VLF3);
+    // LogPrintf("Terminal-Velocity 4th multiplier set to: %f: \n",VLF4);
+    // LogPrintf("Terminal-Velocity 5th multiplier set to: %f: \n",VLF5);
+    TerminalAverage = (VLF1 + VLF2 + VLF3 + VLF4 + VLF5) / AverageDivisor;
+    // LogPrintf("Terminal-Velocity averaged a final multiplier of: %f: \n",TerminalAverage);
+
+    // Retarget
+    CBigNum bnOld;
+    CBigNum bnNew;
+
+    TerminalFactor *= TerminalAverage;
+    difficultyfactor = TerminalFactor;
+    bnOld.SetCompact(BlockVelocityType->nBits);
+    bnNew = bnOld / difficultyfactor;
+    bnNew *= 10000;
+
+    if (bnNew > bnTerminalVelocity)
+      bnNew = bnTerminalVelocity;
+
+    // LogPrintf("Prior Terminal-Velocity: %08x  %s\n", BlockVelocityType->nBits, bnOld.ToString());
+    // LogPrintf("New Terminal-Velocity:  %08x  %s\n", bnNew.GetCompact(), bnNew.ToString());
+    return bnNew.GetCompact();
+}
+
 unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake)
 {
-    return GetNextTargetRequired_(pindexLast, fProofOfStake);
+    // Initialize with DGW selected
+    unsigned int retarget = DIFF_VRX;
+
+    /* Chain starts with Peercoin per-block restarget,
+       PPC retarget difficulty runs for the initial blocks */
+    if(pindexBest->nHeight < nTimeFork)
+    {
+        retarget = DIFF_PPC;
+        // debug info for testing
+        // LogPrintf("PPC per-block retarget selected \n");
+    }
+    // Retarget using PPC
+    if (retarget == DIFF_PPC)
+    {
+        // debug info for testing
+        //LogPrintf("Halloweencoin retargetted using: PPC difficulty algo \n");
+        return PeercoinDiff(pindexLast, fProofOfStake);
+    }
+    // Retarget using Terminal-Velocity
+    // debug info for testing
+    // LogPrintf("Terminal-Velocity retarget selected \n");
+    // LogPrintf("Halloweencoin retargetted using: Terminal-Velocity difficulty curve \n");
+    return Terminal_Velocity_RateX(pindexLast, fProofOfStake);
 }
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits)
@@ -2119,9 +2350,6 @@ bool CBlock::AcceptBlock()
     CBlockIndex* pindexPrev = (*mi).second;
     int nHeight = pindexPrev->nHeight+1;
 
-    if (IsProofOfWork() && nHeight > LAST_POW_BLOCK)
-        return DoS(100, error("AcceptBlock() : reject proof-of-work at height %d", nHeight));
-
     if (IsProofOfStake() && nHeight < MODIFIER_INTERVAL_SWITCH)
         return DoS(100, error("AcceptBlock() : reject proof-of-stake at height %d", nHeight));
 
@@ -2482,6 +2710,11 @@ bool LoadBlockIndex(bool fAllowNew)
         nStakeMinAge = 20 * 60; // test net min age is 20 min
         nCoinbaseMaturity = 10; // test maturity is 10 blocks
     }
+    else if (!fTestNet)
+    {
+        if(nBestHeight > nTimeFork)
+            nTargetSpacing = nTargetSpacingRedux;
+    }
 #if 0
     // Set up the Zerocoin Params object
     ZCParams = new libzerocoin::Params(bnTrustedModulus);
@@ -2522,24 +2755,6 @@ bool LoadBlockIndex(bool fAllowNew)
             block.nNonce = 857277 ;
         }
 		
-		uint256 nhashMerkleRoot = uint256("fb8e7cbe4594ad92936a4a0f2e044b79c002e51e68baa26cf6c7a29e05c09029");
-
-		if (false  && (block.GetHash() != hashGenesisBlock)) {
-
-        // This will figure out a valid hash and Nonce if you're
-        // creating a different genesis block:
-            uint256 hashTarget = CBigNum().SetCompact(block.nBits).getuint256();
-            while (block.GetHash() > hashTarget)
-               {
-                   ++block.nNonce;
-                   if (block.nNonce == 0)
-                   {
-                       printf("NONCE WRAPPED, incrementing time");
-                       ++block.nTime;
-                   }
-               }
-        }
-		
         block.print();
         printf("block.GetHash() == %s\n", block.GetHash().ToString().c_str());
         printf("block.hashMerkleRoot == %s\n", block.hashMerkleRoot.ToString().c_str());
@@ -2547,7 +2762,7 @@ bool LoadBlockIndex(bool fAllowNew)
         printf("block.nNonce = %u \n", block.nNonce);
 
         //// debug print
-        assert(block.hashMerkleRoot == nhashMerkleRoot);
+        assert(block.hashMerkleRoot == uint256("fb8e7cbe4594ad92936a4a0f2e044b79c002e51e68baa26cf6c7a29e05c09029"));
         block.print();
         assert(block.GetHash() == (!fTestNet ? hashGenesisBlock : hashGenesisBlockTestNet));
         assert(block.CheckBlock());
@@ -2845,15 +3060,15 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
         CAddress addrFrom;
         uint64_t nNonce = 1;
         vRecv >> pfrom->nVersion >> pfrom->nServices >> nTime >> addrMe;
-        if (pfrom->nVersion < MIN_PROTO_VERSION)
+        if (pfrom->nVersion < MIN_PROTO_VERSION || pfrom->nVersion < MIN_PEER_PROTO_VERSION)
         {
             // Since February 20, 2012, the protocol is initiated at version 209,
             // and earlier versions are no longer supported
+            // disconnect from peers older than this proto version
             printf("partner %s using obsolete version %i; disconnecting\n", pfrom->addr.ToString().c_str(), pfrom->nVersion);
             pfrom->fDisconnect = true;
             return false;
         }
-
         if (pfrom->nVersion == 10300)
             pfrom->nVersion = 300;
         if (!vRecv.empty())

@@ -27,8 +27,12 @@ class CInv;
 class CRequestTracker;
 class CNode;
 
-//Last POW block
-static const int LAST_POW_BLOCK = 5184000;
+// Define difficulty retarget algorithms
+enum DiffMode {
+    DIFF_DEFAULT = 0, // Default to invalid 0
+    DIFF_PPC     = 1, // Retarget using Peercoin per-block
+    DIFF_VRX     = 2, // Retarget using Terminal-Velocity
+};
 
 static const unsigned int MAX_BLOCK_SIZE = 1000000;
 static const unsigned int MAX_BLOCK_SIZE_GEN = MAX_BLOCK_SIZE/2;
@@ -40,7 +44,11 @@ static const int64_t MIN_RELAY_TX_FEE = MIN_TX_FEE;
 static const int64_t MAX_MONEY = 1500000000 * COIN;
 static const int64_t MAX_MINT_PROOF_OF_STAKE = 0.1 * COIN;
 static const int64_t COIN_YEAR_REWARD = 10 * CENT;
-static const int MODIFIER_INTERVAL_SWITCH = 1; // PoS begins after 1 block
+static const int64_t MODIFIER_INTERVAL_SWITCH = 1; // PoS begins after 1 block
+static const int64_t BLOCK_SPACING = 6 * 60;
+static const int64_t BLOCK_SPACING_MIN = 4 * 60; // This value is not used until Velocity constraint system is implemented
+static const int64_t BLOCK_SPACING_MAX = 8 * 60;
+static const int64_t nTimeFork = 910000;
 
 inline bool MoneyRange(int64_t nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
 // Threshold for nLockTime: below this value it is interpreted as block number, otherwise as UNIX timestamp.
@@ -52,8 +60,8 @@ static const int fHaveUPnP = true;
 static const int fHaveUPnP = false;
 #endif
 
-static const uint256 hashGenesisBlock("00000bef71c5ffeb052afd75f793fa4eb6648db14c124db90390b8c36c20be28");
-static const uint256 hashGenesisBlockTestNet("00000bef71c5ffeb052afd75f793fa4eb6648db14c124db90390b8c36c20be28");
+static const uint256 hashGenesisBlock("0x00000bef71c5ffeb052afd75f793fa4eb6648db14c124db90390b8c36c20be28");
+static const uint256 hashGenesisBlockTestNet("0x00000bef71c5ffeb052afd75f793fa4eb6648db14c124db90390b8c36c20be28");
 inline int64_t PastDrift(int64_t nTime)   { return nTime - 90 * 60; } // up to 90 minutes from the past
 inline int64_t FutureDrift(int64_t nTime) { return nTime + 90 * 60; } // up to 90 minutes from the future
 

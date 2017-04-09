@@ -1091,7 +1091,7 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
     if (!streamConfig.good())
     {
         boost::filesystem::path ConfPath;
-               ConfPath = GetDefaultDataDir() / "Halloween.conf";
+               ConfPath = GetDataDir() / "Halloween.conf";
                FILE* ConfFile = fopen(ConfPath.string().c_str(), "w");
                fprintf(ConfFile, "listen=1\n");
                fprintf(ConfFile, "server=1\n");
@@ -1110,6 +1110,7 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
                fprintf(ConfFile, "port=35727\n");
                fprintf(ConfFile, "rpcport=35718\n");
                fprintf(ConfFile, "rpcconnect=127.0.0.1\n");
+               fprintf(ConfFile, "rpcallowip=127.0.0.1\n");
                fprintf(ConfFile, "addnode=149.56.154.75:35727\n");
                fprintf(ConfFile, "addnode=217.175.119.126:35727\n");
                fprintf(ConfFile, "addnode=72.22.113.97:35727\n");
@@ -1119,16 +1120,17 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
 
                fclose(ConfFile);
 
-               // Returns our config path, created config file is NOT loaded first time...
-               // Wallet will need to be reloaded before config file is properly read...
+               // Returns our config path, created config file is loaded during initial run...
                return ;
-
-               if (confLoop < 1)
-               {
-               ++confLoop;
-               goto injectConfig;
-               }
     }
+
+    // Wallet will reload config file so it is properly read...
+    if (confLoop < 1)
+    {
+        ++confLoop;
+        goto injectConfig;
+    }
+
     set<string> setOptions;
     setOptions.insert("*");
 

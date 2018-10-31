@@ -722,7 +722,7 @@ static void RPCListen(boost::shared_ptr< basic_socket_acceptor<Protocol> > accep
 template <typename Protocol>
 static void RPCAcceptHandler(boost::shared_ptr< basic_socket_acceptor<Protocol> > acceptor,
                              ssl::context& context,
-                             bool fUseSSL,
+                             const bool fUseSSL,
                              AcceptedConnection* conn,
                              const boost::system::error_code& error)
 {

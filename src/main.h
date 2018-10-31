@@ -49,6 +49,7 @@ static const int64_t BLOCK_SPACING = 6 * 60;
 static const int64_t BLOCK_SPACING_MIN = 4 * 60; // This value is not used until Velocity constraint system is implemented
 static const int64_t BLOCK_SPACING_MAX = 8 * 60;
 static const int64_t nTimeFork = 910000;
+static const int64_t nTimeFork_2 = 1546382547;
 
 inline bool MoneyRange(int64_t nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
 // Threshold for nLockTime: below this value it is interpreted as block number, otherwise as UNIX timestamp.
@@ -119,9 +120,17 @@ CBlockIndex* FindBlockByHeight(int nHeight);
 bool ProcessMessages(CNode* pfrom);
 bool SendMessages(CNode* pto, bool fSendTrickle);
 bool LoadExternalBlockFile(FILE* fileIn);
+void VRXswngPoSdebug();
+void VRXswngPoWdebug();
+void VRXdebug();
+void GNTdebug();
+void VRX_BaseEngine(const CBlockIndex* pindexLast, bool fProofOfStake);
+void VRX_ThreadCurve(const CBlockIndex* pindexLast, bool fProofOfStake);
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits);
 unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake);
+unsigned int PeercoinDiff(const CBlockIndex* pindexLast, bool fProofOfStake);
+unsigned int VRX_Retarget(const CBlockIndex* pindexLast, bool fProofOfStake);
 int64_t GetProofOfWorkReward(int64_t nFees);
 int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees);
 unsigned int ComputeMinWork(unsigned int nBase, int64_t nTime);

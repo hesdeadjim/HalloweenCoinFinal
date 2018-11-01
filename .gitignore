@@ -1,0 +1,24 @@
+src/*.exe
+src/Halloweend
+src/build.h
+.*.swp
+*.*~*
+*.bak
+*.rej
+*.orig
+*.o
+*.patch
+.Halloween
+#compilation and Qt preprocessor part
+*.qm
+Makefile
+Halloween-qt
+#resources cpp
+qrc_*.cpp
+#qt creator
+*.pro.user
+#mac specific
+.DS_Store
+build
+
+!src/leveldb/Makefile
